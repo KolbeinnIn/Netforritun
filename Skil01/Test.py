@@ -1,51 +1,30 @@
-#Kolbeinn Ingólfsson
-#11.1.2019
-"""
-import socket               # Import socket module
-
-s = socket.socket()         # Create a socket object
-#host = socket.gethostname() # Get local machine name
-host = socket.gethostname()
-listi = ["Bjalli", "Kalliarolunni", "SexyHotCoffee00"]
-port = 12345                # Reserve a port for your service.
-s.bind((host, port))        # Bind to the port
-s.listen(10)                 # Now wait for client connection.
-while True:
-    c, addr = s.accept()     # Establish connection with client.
-    print('Got connection from', addr)
-    for x in listi:
-        x = x.encode()
-        c.send(x)
-    data = c.recv(1024)
-    print(data)
-"""
-# server.py
+import pickle
 import socket
-import time
+from os import listdir
+from os.path import isfile, join
+from re import *
 
-# create a socket object
-serversocket = socket.socket(
-	        socket.AF_INET, socket.SOCK_STREAM)
+HOST = socket.gethostname()
+PORT = 12345
 
-# get local machine name
-host = socket.gethostname()
+s = socket.socket()
+s.bind((HOST, PORT))
+s.listen(2)
 
-port = 9999
-
-# bind to the port
-serversocket.bind((host, port))
-
-# queue up to 5 requests
-serversocket.listen(5)
-
-try:
-    while True:
-        # establish a connection
-        clientsocket,addr = serversocket.accept()
-
-        print("Got a connection from %s" % str(addr))
-        while True:
-            currentTime = time.ctime(time.time())
-            clientsocket.send(currentTime.encode('ascii'))
-except:
-    pass
+onlyfiles = [f for f in listdir("./") if (isfile(join("./", f)) and match(".*.txt", f))]
+while True:
+    data = pickle.dumps(onlyfiles)
+    c, addr = s.accept()
+    c.send(data)
+    recieve = c.recv(1024)
+    try:
+        svar = pickle.loads(recieve)
+        print(svar)
+        uppsk = onlyfiles[svar - 1]
+        f = open(uppsk, 'rb')
+        print('Connected by', addr)
+        data = f.read(1024)
+        c.send(data)
+        f.close()
+    except:
+        pass
