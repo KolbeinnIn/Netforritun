@@ -1,7 +1,11 @@
 import pygame
+import tkinter
+
+root = tkinter.Tk()
+width = root.winfo_screenwidth()
+height = root.winfo_screenheight()
 
 clock = pygame.time.Clock()
-
 
 class Obj(pygame.sprite.Sprite):
     def __init__(self, window, img, x, y):
@@ -51,11 +55,12 @@ class Player(pygame.sprite.Sprite):
             self.rect.y = 50
 
 
+
 class Bakgrunnur(pygame.sprite.Sprite):
     def __init__(self, image_file, location):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(image_file).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (1920, 1080))
+        self.image = image_file.convert_alpha()
+        self.image = pygame.transform.scale(self.image, (width, height))
         self.rect = self.image.get_rect()
         self.rect.left, self.rect.top = location
 
