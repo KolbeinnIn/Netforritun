@@ -1,26 +1,22 @@
-
+#Kolbeinn, Ágúst, Bjarki
+#Skilaverkefni 1
 import socket
-import sys
-import time
-# create a socket object
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+import pickle
 
-# get local machine name
-host = socket.gethostname()
+HOST = '10.220.226.55'
+PORT = 12345
 
-port = 9999
-
-# connection to hostname on the port.
-s.connect((host, port))
-
-# Receive no more than 1024 bytes
+s = socket.socket()
+s.connect((HOST, PORT))
+data = pickle.loads(s.recv(1024))
+for x in range(len(data)):
+    print(x+1, data[x])
 
 
+numer = int(input("Veldu númer: "))
+s.send(pickle.dumps(numer))
+f = open(data[numer-1], 'wb')
 
-while True:
-    tm = s.recv(1024)
-    sys.stdout.write('\r' + 'The time got from the server is: ' + str(tm.decode("ascii")))
-    #print("\rTime:", tm.decode("ascii"), end="\b")
-    #sys.stdout.flush()
-
-
+data = s.recv(1024)
+f.write(data)
+f.close()

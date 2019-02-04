@@ -1,18 +1,22 @@
+#Kolbeinn, Ágúst, Bjarki
+#Skilaverkefni 1
 import socket
+import pickle
 
-#HOST = socket.gethostname()
-HOST = '10.220.226.55'
+HOST = '10.220.226.64'
 PORT = 12345
 
-#with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as s:
 s = socket.socket()
-s.connect((HOST,PORT))
-#s.sendall('Hello, World')
-#data = s.recv(1024)
-#print(data)
-#s.send(b'au')
-f = open('b.txt','wb')
+s.connect((HOST, PORT))
+data = pickle.loads(s.recv(1024))
+for x in range(len(data)):
+    print(x+1, data[x])
+
+
+numer = int(input("Veldu númer: "))
+s.send(pickle.dumps(numer))
+f = open(data[numer-1], 'wb')
+
 data = s.recv(1024)
 f.write(data)
 f.close()
-#print('Recived', repr(data))
