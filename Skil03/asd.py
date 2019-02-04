@@ -4,17 +4,17 @@ with open("ord.txt", "r", encoding="ISO-8859-1") as f:
 
 
 
-asd = ["b", "s", "n"]
-
 ord = "vatn"
-for x in asd:
-    print(x)
-    for i in ord:
-        if i != x:
-            ord = ord.replace(i, "_")
-            break
+ord2 = ""
 
-#ord = ord.replace(" ", "")
+stafalisti = ["a", "v", "s"]
 
+for x in ord:
+    if x in stafalisti:
+        for i in stafalisti:
+            if x == i:
+                ord2 += x + " "
+    else:
+        ord2 += "_ "
 
-print(ord)
+print(ord2)
