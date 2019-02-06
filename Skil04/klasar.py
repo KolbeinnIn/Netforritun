@@ -1,12 +1,35 @@
 import pygame
+import tkinter
+from random import *
+
+root = tkinter.Tk()
+width = root.winfo_screenwidth()
+height = root.winfo_screenheight()
 
 clock = pygame.time.Clock()
 
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self, window):
+def random(low, high):
+    a = randint(low, high)
+    return a
+
+
+
+
+class Obj(pygame.sprite.Sprite):
+    def __init__(self, window, img, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("images/hero.png").convert_alpha()
+        self.image = img
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.window = window
+
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self, window, img):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("images/"+img).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = 390
         self.rect.y = 390
@@ -18,6 +41,16 @@ class Player(pygame.sprite.Sprite):
             self.move_single_axis(dx, dy)
         if dy != 0:
             self.move_single_axis(dx, dy)
+    """
+    def move(self, dire):
+        if dire == 'up':
+            self.rect.centery -= 2
+        if dire == 'down':
+            self.rect.centery += 2
+        if dire == 'left':
+            self.rect.centerx -= 2
+        if dire == 'right':
+            self.rect.centerx += 2"""
 
     def move_single_axis(self, dx, dy):
         if self.rect.x <= 1838:
@@ -40,11 +73,18 @@ class Player(pygame.sprite.Sprite):
         else:
             self.rect.y = 50
 
+    def make_data_package(self):
+        datax = str(self.rect.centerx).rjust(4, '0')
+        datay = str(self.rect.centery).rjust(4, '0')
+        return datax + datay
 
-class Background(pygame.sprite.Sprite):
+class Bakgrunnur(pygame.sprite.Sprite):
     def __init__(self, image_file, location):
-        pygame.sprite.Sprite.__init__(self)  #call Sprite initializer
-        self.image = pygame.image.load(image_file).convert_alpha()
-        self.image = pygame.transform.scale(self.image, (1920, 1080))
+        pygame.sprite.Sprite.__init__(self)
+        self.image = image_file.convert_alpha()
+        self.image = pygame.transform.scale(self.image, (width, height))
         self.rect = self.image.get_rect()
         self.rect.left, self.rect.top = location
+
+
+
