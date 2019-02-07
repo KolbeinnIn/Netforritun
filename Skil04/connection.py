@@ -3,6 +3,7 @@ import socket, sys
 data_payload = 2048
 backlog = 2
 
+
 class Client():
     def __init__(self, ip, port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

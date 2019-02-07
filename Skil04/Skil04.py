@@ -2,8 +2,6 @@
 # Miðannarverkefni netforritun og þráðavinnsla
 
 
-
-
 import pygame
 import klasar
 import time
@@ -17,20 +15,20 @@ window = pygame.display.set_mode(window_size, pygame.FULLSCREEN)
 width = klasar.width
 height = klasar.height
 
-MY_SERVER_HOST = '192.168.3.9'
-MY_SERVER_PORT = 9999
-OTHER_HOST = '192.168.3.5'
-OTHER_PORT = 9992
+MY_SERVER_HOST = '192.168.1.157'
+MY_SERVER_PORT = 9992
+OTHER_HOST = '192.168.1.71'
+OTHER_PORT = 9999
 
 
 class Player_1(klasar.Player):
     def __init__(self):
-        super().__init__(window, "hero.jpg")
+        super().__init__(window, "hero.png")
 
 
 class Player_2(klasar.Player):
     def __init__(self):
-        super().__init__(window, "hero2.jpg")
+        super().__init__(window, "hero2.png")
 
 
 def ip_value(ip):
@@ -45,6 +43,7 @@ def define_players():
         me = Player_2()
         enemy = Player_1()
     return me, enemy
+
 
 def data_transfer():
     me_data = player.make_data_package()
@@ -146,10 +145,11 @@ while running:
             mission = True
 
     if mission:
-        if collected == 7:
+        if collected == 5:
             window.fill((0, 0, 0, 1))
             window.blit(vann1, [width//2, height//2])
-            time.sleep(3)
+            #time.sleep(3)
+            pygame.time.wait(3000)
             running = False
 
         cx = (klasar.random(90, width-90))
@@ -161,7 +161,7 @@ while running:
             blom_list.add(blom)
 
         window.blit(safn, [10, 10])
-
+    data_transfer()
     pygame.display.update()
 pygame.quit()
 
