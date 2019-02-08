@@ -2,8 +2,6 @@
 # Miðannarverkefni netforritun og þráðavinnsla
 
 
-
-
 import pygame
 import klasar
 import time
@@ -17,25 +15,24 @@ window = pygame.display.set_mode(window_size, pygame.FULLSCREEN)
 width = klasar.width
 height = klasar.height
 
-MY_SERVER_HOST = '192.168.3.9'
-MY_SERVER_PORT = 9999
-OTHER_HOST = '192.168.3.5'
-OTHER_PORT = 9992
+MY_SERVER_HOST = '10.220.226.53'
+MY_SERVER_PORT = 9992
+OTHER_HOST = '10.220.226.55'
+OTHER_PORT = 9999
 
 
 class Player_1(klasar.Player):
     def __init__(self):
-        super().__init__(window, "hero.jpg")
+        super().__init__(window, "hero.png")
 
 
 class Player_2(klasar.Player):
     def __init__(self):
-        super().__init__(window, "hero2.jpg")
+        super().__init__(window, "hero2.png")
 
 
 def ip_value(ip):
     return int(''.join([x.rjust(3, '0') for x in ip.split('.')]))
-
 
 def define_players():
     if ip_value(MY_SERVER_HOST) > ip_value(OTHER_HOST):
@@ -45,6 +42,7 @@ def define_players():
         me = Player_2()
         enemy = Player_1()
     return me, enemy
+
 
 def data_transfer():
     me_data = player.make_data_package()
@@ -107,6 +105,11 @@ vann2 = my_font.render('Gummi vann, Jónatan tapaði', False, (255, 255, 255))
 
 server = connection.Server(MY_SERVER_HOST, MY_SERVER_PORT)
 
+bubble = pygame.transform.scale(img("images/bubble.png"), (400, 70))
+bubble = (bubble.convert_alpha(), [(width * 0.82)-290, (height * 0.36)-54])
+textsurface = (textsurface.convert_alpha(), [(width * 0.82)-270, (height * 0.36)-30])
+
+
 speed = 3
 running = True
 mission = False
@@ -140,16 +143,17 @@ while running:
     if pygame.sprite.groupcollide(obj_list, player_list, False, False):
         #window.blit(img("images/text1.png"), [(width * 0.82)-64, (height * 0.36)-64])
         bubble = pygame.transform.scale(img("images/bubble.png"), (400, 70))
-        window.blit(bubble, [(width * 0.82)-290, (height * 0.36)-54])
-        window.blit(textsurface, [(width * 0.82)-270, (height * 0.36)-30])
+        window.blit(bubble)
+        window.blit(textsurface)
         if key[pygame.K_SPACE]:
             mission = True
 
     if mission:
-        if collected == 7:
+        if collected == 5:
             window.fill((0, 0, 0, 1))
             window.blit(vann1, [width//2, height//2])
-            time.sleep(3)
+            #time.sleep(3)
+            pygame.time.wait(3000)
             running = False
 
         cx = (klasar.random(90, width-90))
@@ -161,8 +165,7 @@ while running:
             blom_list.add(blom)
 
         window.blit(safn, [10, 10])
-
+    data_transfer()
     pygame.display.update()
 pygame.quit()
-
 

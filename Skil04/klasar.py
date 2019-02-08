@@ -85,6 +85,3 @@ class Bakgrunnur(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (width, height))
         self.rect = self.image.get_rect()
         self.rect.left, self.rect.top = location
-
-
-
