@@ -14,8 +14,6 @@ def random(low, high):
     return a
 
 
-
-
 class Obj(pygame.sprite.Sprite):
     def __init__(self, window, img, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -25,6 +23,10 @@ class Obj(pygame.sprite.Sprite):
         self.rect.y = y
         self.window = window
 
+    def make_data_package(self):
+        datax = str(self.rect.centerx).rjust(4, '0')
+        datay = str(self.rect.centery).rjust(4, '0')
+        return datax + datay
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, window, img):
@@ -41,16 +43,6 @@ class Player(pygame.sprite.Sprite):
             self.move_single_axis(dx, dy)
         if dy != 0:
             self.move_single_axis(dx, dy)
-    """
-    def move(self, dire):
-        if dire == 'up':
-            self.rect.centery -= 2
-        if dire == 'down':
-            self.rect.centery += 2
-        if dire == 'left':
-            self.rect.centerx -= 2
-        if dire == 'right':
-            self.rect.centerx += 2"""
 
     def move_single_axis(self, dx, dy):
         if self.rect.x <= 1838:
@@ -76,7 +68,9 @@ class Player(pygame.sprite.Sprite):
     def make_data_package(self):
         datax = str(self.rect.centerx).rjust(4, '0')
         datay = str(self.rect.centery).rjust(4, '0')
+
         return datax + datay
+
 
 class Bakgrunnur(pygame.sprite.Sprite):
     def __init__(self, image_file, location):

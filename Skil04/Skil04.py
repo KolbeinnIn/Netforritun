@@ -7,6 +7,7 @@ import klasar
 import time
 import connection
 import socket
+import pickle
 
 pygame.init()
 
@@ -34,6 +35,7 @@ class Player_2(klasar.Player):
 def ip_value(ip):
     return int(''.join([x.rjust(3, '0') for x in ip.split('.')]))
 
+
 def define_players():
     if ip_value(MY_SERVER_HOST) > ip_value(OTHER_HOST):
         me = Player_1()
@@ -46,7 +48,8 @@ def define_players():
 
 def data_transfer():
     me_data = player.make_data_package()
-    connection.send(me_data, OTHER_HOST, OTHER_PORT) # the send code
+
+    connection.send(me_data, OTHER_HOST, OTHER_PORT)# the send code
 
     enemy_data = server.receive()# the receive code
 
@@ -77,21 +80,40 @@ gamli = klasar.Obj(window, gamliM, width * 0.82, height * 0.36)
 
 blomM = img('images/blom.png')
 blomM = pygame.transform.scale(blomM, (40, 40)).convert_alpha()
-cx = (klasar.random(90, width-90))
-cy = (klasar.random(90, height-90))
-blom = klasar.Obj(window, blomM, cx, cy)
+blomstra = []
+for x in range(9):
+    cx = (klasar.random(90, width-90))
+    cy = (klasar.random(90, height-90))
+    blomstra.append((cx, cy))
+
+
+HOST = socket.gethostname()
+PORT = 12345
+
+s = socket.socket()
+s.bind((HOST, PORT))
+s.listen(2)
+
+while True:
+    c, addr = s.accept()
+    c.send(pickle.dumps(blomstra))
+    blomstra2 = pickle.loads(c.recv(1024))
+    if len(blomstra2) != 0:
+        break
+
+print(blomstra2)
+
 
 player_list = pygame.sprite.Group()
 obj_list = pygame.sprite.Group()
-
 blom_list = pygame.sprite.Group()
-all_sprites_list = pygame.sprite.Group()
-all_sprites_list.add(player)
-all_sprites_list.add(player2)
-all_sprites_list.add(gamli)
-all_sprites_list.add(blom)
 
-blom_list.add(blom)
+for i in range(len(blomstra)):
+    x = (blomstra[i][0] + blomstra2[i][0]) // 2
+    y = (blomstra[i][1] + blomstra2[i][1]) // 2
+    blom = klasar.Obj(window, blomM, x, y)
+    blom_list.add(blom)
+
 player_list.add(player)
 player_list.add(player2)
 obj_list.add(gamli)
@@ -106,8 +128,10 @@ vann2 = my_font.render('Gummi vann, Jónatan tapaði', False, (255, 255, 255))
 server = connection.Server(MY_SERVER_HOST, MY_SERVER_PORT)
 
 bubble = pygame.transform.scale(img("images/bubble.png"), (400, 70))
-bubble = (bubble.convert_alpha(), [(width * 0.82)-290, (height * 0.36)-54])
-textsurface = (textsurface.convert_alpha(), [(width * 0.82)-270, (height * 0.36)-30])
+bubblePos = [(width * 0.82)-290, (height * 0.36)-54]
+textPos = [(width * 0.82)-270, (height * 0.36)-30]
+bubble = bubble.convert_alpha()
+textsurface = textsurface.convert_alpha()
 
 
 speed = 3
@@ -135,16 +159,13 @@ while running:
     if key[pygame.K_UP] or key[pygame.K_w]:
         player.move(0, -speed)
 
-    #all_sprites_list.draw(window)
     player_list.draw(window)
     obj_list.draw(window)
     blom_list.draw(window)
 
     if pygame.sprite.groupcollide(obj_list, player_list, False, False):
-        #window.blit(img("images/text1.png"), [(width * 0.82)-64, (height * 0.36)-64])
-        bubble = pygame.transform.scale(img("images/bubble.png"), (400, 70))
-        window.blit(bubble)
-        window.blit(textsurface)
+        window.blit(bubble, bubblePos)
+        window.blit(textsurface, textPos)
         if key[pygame.K_SPACE]:
             mission = True
 
@@ -161,8 +182,8 @@ while running:
         if pygame.sprite.groupcollide(blom_list, player_list, False, False) and key[pygame.K_SPACE]:
             pygame.sprite.groupcollide(blom_list, player_list, True, False)
             collected += 1
-            blom = klasar.Obj(window, blomM, cx, cy)
-            blom_list.add(blom)
+            #blom = klasar.Obj(window, blomM, cx, cy)
+            #blom_list.add(blom)
 
         window.blit(safn, [10, 10])
     data_transfer()
