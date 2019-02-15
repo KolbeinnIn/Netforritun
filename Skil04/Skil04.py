@@ -105,6 +105,7 @@ print(blomstra2)
 
 
 player_list = pygame.sprite.Group()
+player_list2 = pygame.sprite.Group()
 obj_list = pygame.sprite.Group()
 blom_list = pygame.sprite.Group()
 
@@ -115,7 +116,7 @@ for i in range(len(blomstra)):
     blom_list.add(blom)
 
 player_list.add(player)
-player_list.add(player2)
+player_list2.add(player2)
 obj_list.add(gamli)
 
 bakgrunnur = klasar.Bakgrunnur(img('images/bak.jpg'), [0, 0])
@@ -137,7 +138,9 @@ textsurface = textsurface.convert_alpha()
 speed = 3
 running = True
 mission = False
+mission2 = False
 collected = 0
+collected2 = 0
 while running:
     clock.tick(60)
     key = pygame.key.get_pressed()
@@ -160,30 +163,34 @@ while running:
         player.move(0, -speed)
 
     player_list.draw(window)
+    player_list2.draw(window)
     obj_list.draw(window)
     blom_list.draw(window)
 
-    if pygame.sprite.groupcollide(obj_list, player_list, False, False):
+    if pygame.sprite.groupcollide(obj_list, player_list, False, False) or pygame.sprite.groupcollide(obj_list, player_list2, False, False):
         window.blit(bubble, bubblePos)
         window.blit(textsurface, textPos)
-        if key[pygame.K_SPACE]:
-            mission = True
+        #if key[pygame.K_SPACE]:
+        mission = True
 
     if mission:
-        if collected == 5:
+        if collected == 5 or collected2 == 5:
             window.fill((0, 0, 0, 1))
-            window.blit(vann1, [width//2, height//2])
-            #time.sleep(3)
+            if collected == 5:
+                window.blit(vann2, [width//2, height//2])
+            elif collected2 == 5:
+                window.blit(vann1, [width//2, height//2])
+            pygame.display.flip()
+            #time.sleep(5)
             pygame.time.wait(3000)
             running = False
 
         cx = (klasar.random(90, width-90))
         cy = (klasar.random(90, height-90))
-        if pygame.sprite.groupcollide(blom_list, player_list, False, False) and key[pygame.K_SPACE]:
-            pygame.sprite.groupcollide(blom_list, player_list, True, False)
+        if pygame.sprite.groupcollide(blom_list, player_list, True, False):
             collected += 1
-            #blom = klasar.Obj(window, blomM, cx, cy)
-            #blom_list.add(blom)
+        if pygame.sprite.groupcollide(blom_list, player_list2, True, False):
+            collected2 += 1
 
         window.blit(safn, [10, 10])
     data_transfer()
